@@ -2,6 +2,7 @@ import os
 import json
 import random
 import requests
+import html
 
 from base64 import b64encode
 from dotenv import load_dotenv, find_dotenv
@@ -93,18 +94,19 @@ def makeSVG(data):
     barCSS = barGen(barCount)
 
     if data == {} or data["item"] == "None" or data["item"] is None:
-        # contentBar = "" #Shows/Hides the EQ bar if no song is currently playing
-        currentStatus = "Was playing:"
+        contentBar = "" #Shows/Hides the EQ bar if no song is currently playing
+        currentStatus = "Was playing on Spotify:"
         recentPlays = recentlyPlayed()
         recentPlaysLength = len(recentPlays["items"])
         itemIndex = random.randint(0, recentPlaysLength - 1)
         item = recentPlays["items"][itemIndex]["track"]
     else:
         item = data["item"]
-        currentStatus = "Vibing to:"
+        currentStatus = "Currently playing on Spotify:"
     image = loadImageB64(item["album"]["images"][1]["url"])
-    artistName = item["artists"][0]["name"].replace("&", "&amp;")
-    songName = item["name"].replace("&", "&amp;")
+    artistName = html.escape(item["artists"][0]["name"])
+    songName = html.escape(item["name"])
+    url = item["external_urls"]["spotify"]
 
     dataDict = {
         "contentBar": contentBar,
@@ -113,6 +115,7 @@ def makeSVG(data):
         "songName": songName,
         "image": image,
         "status": currentStatus,
+        "url": url
     }
 
     return render_template("spotify.html.j2", **dataDict)
