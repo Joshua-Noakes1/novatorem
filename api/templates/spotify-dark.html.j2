@@ -1,24 +1,24 @@
-<svg width="480" height="173" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <foreignObject width="480" height="173">
+<svg width="480" height="133" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <foreignObject width="480" height="133">
         <div xmlns="http://www.w3.org/1999/xhtml" class="container">
             <style>
                 .main {
-                    margin-top: 40px;
+                    /*margin-top: 40px;*/
                     display: flex;
                 }
 
                 .currentStatus {
-                    color: #666;
                     float: left;
                     font-size: 24px;
                     position: static;
                     margin-top: -5px;
                     margin-left: 10px;
                 }
-
+                
                 .container {
                     border-radius: 5px;
                     padding: 10px 10px 10px 0px;
+                    background-color:#181414;
                 }
 
                 .art {
@@ -32,17 +32,17 @@
                 }
 
                 .song {
-                    color: #666;
-                    overflow: hidden;
+                    color: #f7f7f7;
+                    overflow:hidden;
                     margin-top: 3px;
                     font-size: 24px;
                     text-align: center;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
+                    white-space:nowrap;
+                    text-overflow:ellipsis;
                 }
 
                 .artist {
-                    color: #b3b3b3;
+                    color: #9f9f9f;
                     font-size: 20px;
                     margin-top: 4px;
                     text-align: center;
@@ -52,8 +52,7 @@
                 .cover {
                     width: 100px;
                     height: 100px;
-                    border-radius: 50%;
-                    animation: disc 14s linear infinite;
+                    border-radius: 5px;
                 }
 
                 #bars {
@@ -72,15 +71,11 @@
                     background: #1DB954cc;
                     animation: sound 0ms -800ms linear infinite alternate;
                 }
-
+                
                 div {
                     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
                 }
-
-                div a {
-                    text-decoration: none;
-                }
-
+                
                 @keyframes sound {
                     0% {
                         height: 3px;
@@ -93,34 +88,22 @@
                     }
                 }
 
-                @keyframes disc {
-                    from {
-                        transform: rotate(0deg);
-                    }
-
-                    to {
-                        transform: rotate(360deg);
-                    }
-                }
-
-                    {{barCSS|safe}}
+                {{barCSS|safe}}
             </style>
 
-            <div class="currentStatus">{{status}}</div>
+            <!-- <div class="currentStatus">{{status}}</div> -->
 
             <div class="main">
-                <a class="art" href="{{url}}" target="_blank">
+                <a class="art" href="{}" target="_blank">
                     <center>
                         <img src="data:image/png;base64, {{image}}" class="cover" />
                     </center>
                 </a>
 
                 <div class="content">
-                    <a target="_blank" href="{{url}}">
-                        <div class="song">{{songName}}</div>
-                        <div class="artist">{{artistName}}</div>
-                        <div id="bars">{{contentBar|safe}}</div>
-                    </a>
+                    <div class="song">{{songName}}</div>
+                    <div class="artist">{{artistName}}</div>
+                    <div id="bars">{{contentBar|safe}}</div>
                 </div>
             </div>
 
