@@ -170,14 +170,20 @@ def catch_all(path):
         border_color = request.args.get("border_color") or "181414"
         forward_to_spotify = request.args.get("forward_to_spotify") or "false"
 
+        now_playing = True
         try:
             data = get(NOW_PLAYING_URL)
         except Exception:
+            now_playing = False
             data = get(RECENTLY_PLAYING_URL)
 
         #  Redirect to Spotify if a user clicks on the image on GitHub
         if forward_to_spotify == "true":
-            return redirect(data["item"]["external_urls"]["spotify"], code=302)
+            if now_playing:
+                return redirect(data["item"]["external_urls"]["spotify"], code=302)
+            else:
+                # Spotify doesn't report the last played some the same every time, so im going to send user to "The Senti Mix"
+                return redirect("https://open.spotify.com/playlist/5wOxMLeh5EN83Jn2hxAkzV", code=302)
 
         svg = makeSVG(data, background_color, border_color)
 
@@ -185,7 +191,9 @@ def catch_all(path):
         resp.headers["Cache-Control"] = "s-maxage=1"
 
         return resp
-    except:
+    except Exception as e:
+        print(f"Failed to generate image. {e}")
+
         svg = render_template("error.html.j2")
 
         resp = Response(svg, mimetype="image/svg+xml")
