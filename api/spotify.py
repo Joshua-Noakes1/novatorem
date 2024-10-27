@@ -161,6 +161,24 @@ def makeSVG(data, background_color, border_color):
     return render_template(getTemplate(), **dataDict)
 
 
+# Return a song in JSON format for use in other applications
+@app.route("/json")
+def return_spotify_json():
+    try:
+        
+        try:
+            data = get(NOW_PLAYING_URL)
+        except Exception:
+            data = get(RECENTLY_PLAYING_URL)
+            itemIndex = random.randint(0, len(data["items"]) - 1)
+            data = data["items"][itemIndex]["track"]
+        
+        return data
+    except Exception as e:
+        print(f"Failed to get spotify playback data. {e}")
+
+        return {"error": "Failed to get spotify playback data."}
+
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 @app.route("/with_parameters")
@@ -168,25 +186,13 @@ def catch_all(path):
     try:
         background_color = request.args.get("background_color") or "181414"
         border_color = request.args.get("border_color") or "181414"
-        forward_to_spotify = request.args.get("forward_to_spotify") or "false"
 
-        now_playing = True
         try:
             data = get(NOW_PLAYING_URL)
         except Exception:
-            now_playing = False
             data = get(RECENTLY_PLAYING_URL)
 
-        #  Redirect to Spotify if a user clicks on the image on GitHub
-        if forward_to_spotify == "true":
-            if now_playing:
-                return redirect(data["item"]["external_urls"]["spotify"], code=302)
-            else:
-                # Spotify doesn't report the last played some the same every time, so im going to send user to "The Senti Mix"
-                return redirect("https://open.spotify.com/playlist/5wOxMLeh5EN83Jn2hxAkzV", code=302)
-
         svg = makeSVG(data, background_color, border_color)
-
         resp = Response(svg, mimetype="image/svg+xml")
         resp.headers["Cache-Control"] = "s-maxage=1"
 
