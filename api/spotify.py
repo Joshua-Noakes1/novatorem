@@ -161,29 +161,27 @@ def makeSVG(data, background_color, border_color):
     return render_template(getTemplate(), **dataDict)
 
 
-# Return a song in JSON format for use in other applications
-@app.route("/json")
-def return_spotify_json():
-    try:
-        
-        try:
-            data = get(NOW_PLAYING_URL)
-        except Exception:
-            data = get(RECENTLY_PLAYING_URL)
-            itemIndex = random.randint(0, len(data["items"]) - 1)
-            data = data["items"][itemIndex]["track"]
-        
-        return data
-    except Exception as e:
-        print(f"Failed to get spotify playback data. {e}")
 
-        return {"error": "Failed to get spotify playback data."}
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 @app.route("/with_parameters")
 def catch_all(path):
     try:
+        # Return a song in JSON format for use in other applications
+        if request.args.get("json"):
+            try:
+                try:
+                    data = get(NOW_PLAYING_URL)
+                except Exception:
+                    data = get(RECENTLY_PLAYING_URL)
+                    itemIndex = random.randint(0, len(data["items"]) - 1)
+                    data = data["items"][itemIndex]["track"]
+                return data # Return the JSON data  
+            except Exception as e:
+                print(f"Failed to get spotify playback details. {e}")
+                return {"error": "Failed to get spotify playback details."}
+        
         background_color = request.args.get("background_color") or "181414"
         border_color = request.args.get("border_color") or "181414"
 
